@@ -4,8 +4,16 @@ const { Client } = require('pg');
 
 const SQL = `CREATE TABLE IF NOT EXISTS genres (
   id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  genrename VARCHAR(255),
+  genrename VARCHAR(255)
 );
+
+INSERT INTO genres (genrename)
+VALUES
+  ('Action'),
+  ('Adventure'),
+  ('Role-Playing'),
+  ('Strategy'),
+  ('Simulation');
 `;
 
 async function main() {

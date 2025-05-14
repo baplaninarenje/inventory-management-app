@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Game Genres</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>🎮 Game Genres</h1>
+    </header>
+
+    <main>
+      <section>
+        <ul>
+          <% if (genres.length > 0) { %> <% genres.forEach(genre => { %>
+          <li><%= genre.genrename %></li>
+          <% }); %> <% } else { %>
+          <li>No genres available.</li>
+          <% } %>
+        </ul>
+      </section>
+
+      <a href="/genres/new">➕ Add New Genre</a>
+    </main>
+
+    <footer>
+      <p>&copy; <%= new Date().getFullYear() %> Game Manager</p>
+    </footer>
+  </body>
+</html>
