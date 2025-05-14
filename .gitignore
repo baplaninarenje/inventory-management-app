@@ -1,0 +1,71 @@
+# Node modules
+node_modules/
+**/node_modules/
+
+# Build artifacts
+dist/
+build/
+out/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+logs/
+*.log
+
+# Environment variables
+.env
+.env.*  # for env.local, env.production, etc.
+
+# OS / Editor junk
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Testing
+coverage/
+*.lcov
+
+# PM2 logs (if using)
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Optional: ignore database dump files or temp data
+*.sql
+*.sqlite
+*.db
+
+# Optional: ignore uploads
+uploads/
+
+# Frontend-specific (if using React, Vite, or similar)
+*.tsbuildinfo
+.cache/
+.next/
+.nuxt/
+.svelte-kit/
+.sass-cache/
+public/build/
+public/dist/
+frontend/dist/
+frontend/node_modules/
+frontend/.vite/
+
+# Optional: dotenv backups or samples
+.env.backup
+.env.bak
+.env.local
+
+# Optional: ignore AWS/GCP credentials or service account keys
+*.pem
+*.key
+*.crt
+*.p12
+*.enc.json
