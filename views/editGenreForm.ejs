@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Edit Genre</title>
+  </head>
+  <body>
+    <h1>Edit Genre: <%= genre.genrename %></h1>
+
+    <form action="/genres/<%= genre.id %>" method="POST">
+      <div>
+        <label for="genrename">Genre Name:</label>
+        <input
+          type="text"
+          id="genrename"
+          name="genrename"
+          value="<%= genre.genrename %>"
+          required
+        />
+      </div>
+
+      <div>
+        <label for="description">Description:</label><br />
+        <textarea id="description" name="description" rows="4" cols="50">
+<%= genre.description || '' %></textarea
+        >
+      </div>
+
+      <button type="submit">Update Genre</button>
+    </form>
+
+    <p><a href="/">← Back to genre list</a></p>
+  </body>
+</html>
