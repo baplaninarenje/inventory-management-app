@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Create New Genre</title>
+    <style>
+      .error {
+        color: red;
+        font-size: 0.9em;
+      }
+      input,
+      textarea {
+        display: block;
+        margin-bottom: 10px;
+        width: 300px;
+        padding: 5px;
+      }
+      label {
+        font-weight: bold;
+      }
+      .required-asterisk {
+        color: red;
+        margin-left: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Create a New Genre</h1>
+
+    <form action="/genres" method="POST" novalidate>
+      <div>
+        <label for="genrename">
+          Genre Name
+          <span class="required-asterisk">*</span>
+        </label>
+        <input
+          type="text"
+          id="genrename"
+          name="genrename"
+          value="<%= formData?.genrename || '' %>"
+          required
+        />
+        <% if (errors?.genrename) { %>
+        <p class="error"><%= errors.genrename %></p>
+        <% } %>
+      </div>
+
+      <div>
+        <label for="description"> Description </label>
+        <textarea id="description" name="description" rows="4" cols="50">
+<%= formData?.description || '' %> </textarea
+        >
+
+        <% if (errors?.description) { %>
+        <p class="error"><%= errors.description %></p>
+        <% } %>
+      </div>
+
+      <button type="submit">Create Genre</button>
+    </form>
+
+    <p><a href="/">← Back to genre list</a></p>
+  </body>
+</html>
