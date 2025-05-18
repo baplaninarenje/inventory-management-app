@@ -1,4 +1,5 @@
 const genresModel = require('../models/genres');
+const gamesModel = require('../models/games');
 const { body, validationResult } = require('express-validator');
 
 const validateGenre = [
@@ -17,6 +18,27 @@ const validateGenre = [
 ];
 
 module.exports = {
+  show: async (req, res) => {
+    const { genreId } = req.params;
+
+    try {
+      const genre = await genresModel.getGenreById(genreId);
+      if (!genre) {
+        return res.status(404).send('Genre not found');
+      }
+
+      const games = await gamesModel.getGamesByGenreId(genreId);
+
+      res.render('genreDetail', {
+        genre,
+        games,
+      });
+    } catch (err) {
+      console.error('Error fetching genre:', err);
+      res.status(500).send('Server error');
+    }
+  },
+
   create: [
     validateGenre,
     async (req, res) => {

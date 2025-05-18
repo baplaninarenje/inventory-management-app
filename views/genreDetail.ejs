@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title><%= genre.genrename %> - Genre Details</title>
+  </head>
+  <body>
+    <h1><%= genre.genrename %></h1>
+
+    <% if (genre.description) { %>
+    <p><%= genre.description %></p>
+    <% } else { %>
+    <p><em>No description available.</em></p>
+    <% } %>
+
+    <h2>Games in this genre:</h2>
+
+    <% if (games.length === 0) { %>
+    <p>No games found in this genre.</p>
+    <% } else { %>
+    <ul>
+      <% games.forEach((game) => { %>
+      <li><a href="/games/<%= game.id %>"><%= game.title %></a></li>
+      <% }); %>
+    </ul>
+    <% } %>
+
+    <p><a href="/">← Back to all genres</a></p>
+  </body>
+</html>
