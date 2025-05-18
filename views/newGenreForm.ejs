@@ -27,8 +27,15 @@
   <body>
     <h1>Create a New Genre</h1>
 
+    <% if (errors?.general) { %>
+    <p class="error"><%= errors.general %></p>
+    <% } %>
+
     <form action="/genres" method="POST" novalidate>
       <div>
+        <% if (errors?.genrename) { %>
+        <p class="error"><%= errors.genrename %></p>
+        <% } %>
         <label for="genrename">
           Genre Name
           <span class="required-asterisk">*</span>
@@ -40,20 +47,16 @@
           value="<%= formData?.genrename || '' %>"
           required
         />
-        <% if (errors?.genrename) { %>
-        <p class="error"><%= errors.genrename %></p>
-        <% } %>
       </div>
 
       <div>
+        <% if (errors?.description) { %>
+        <p class="error"><%= errors.description %></p>
+        <% } %>
         <label for="description"> Description </label>
         <textarea id="description" name="description" rows="4" cols="50">
 <%= formData?.description || '' %> </textarea
         >
-
-        <% if (errors?.description) { %>
-        <p class="error"><%= errors.description %></p>
-        <% } %>
       </div>
 
       <button type="submit">Create Genre</button>
