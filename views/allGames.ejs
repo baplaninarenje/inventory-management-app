@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>All Games</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        padding: 20px;
+      }
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+      li {
+        margin-bottom: 10px;
+      }
+      .game-title {
+        font-weight: bold;
+      }
+      .game-meta {
+        font-size: 0.9em;
+        color: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>All Games</h1>
+
+    <% if (games.length === 0) { %>
+    <p>No games found.</p>
+    <% } else { %>
+    <ul>
+      <% games.forEach((game) => { %>
+      <li>
+        <a href="/games/<%= game.id %>">
+          <span class="game-title"><%= game.title %></span>
+        </a>
+        <% if (game.release_year || game.genrename) { %>
+        <div class="game-meta">
+          <% if (game.release_year) { %> Released: <%= game.release_year %> <% }
+          %> <% if (game.genrename) { %> | Genre: <%= game.genrename %> <% } %>
+        </div>
+        <% } %>
+      </li>
+      <% }) %>
+    </ul>
+    <% } %>
+
+    <p><a href="/">← Back to home</a></p>
+  </body>
+</html>

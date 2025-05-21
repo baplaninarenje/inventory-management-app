@@ -11,8 +11,10 @@ app.set('view engine', 'ejs');
 
 const indexRouter = require('./routes/indexRouter');
 const genresRouter = require('./routes/genresRouter');
+const gamesRouter = require('./routes/gamesRouter');
 
 // Set up routes
+app.use('/games', gamesRouter);
 app.use('/genres', genresRouter);
 app.use('/', indexRouter);
 
