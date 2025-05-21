@@ -39,6 +39,61 @@ module.exports = {
     }
   },
 
+  update: [
+    validateGenre,
+    async (req, res) => {
+      const { genreId } = req.params;
+      const genreDb = await genresModel.getGenreById(genreId);
+
+      const errors = validationResult(req);
+
+      if (!errors.isEmpty()) {
+        // Map errors array to an object keyed by path for easier use in EJS
+        const errorObj = {};
+        errors.array().forEach((err) => {
+          errorObj[err.path] = err.msg;
+        });
+
+        return res.status(400).render('editGenreForm', {
+          genreId,
+          errors: errorObj,
+          formData: {
+            genrename: req.body.genrename,
+            description: req.body.description,
+          },
+          lastValidGenrename: genreDb.genrename,
+        });
+      }
+
+      try {
+        await genresModel.updateGenre(genreId, req.body);
+        res.redirect(`/genres/${genreId}`);
+      } catch (err) {
+        console.error('Error updating genre:', err);
+        // Check for unique constraint violation (PostgreSQL error code 23505)
+        if (err.code === '23505') {
+          return res.status(400).render('editGenreForm', {
+            genreId,
+            errors: {
+              genrename:
+                'Genre name already exists. Please choose a different one.',
+            },
+            formData: req.body,
+          });
+        }
+
+        // Fallback for any other server error
+        return res.status(500).render('editGenreForm', {
+          genreId,
+          errors: {
+            general: 'An unexpected error occurred. Please try again later.',
+          },
+          formData: req.body,
+        });
+      }
+    },
+  ],
+
   create: [
     validateGenre,
     async (req, res) => {
@@ -112,7 +167,14 @@ module.exports = {
         return;
       }
 
-      res.render('editGenreForm', { genre });
+      res.render('editGenreForm', {
+        genreId,
+        errors: {},
+        formData: {
+          genrename: genre.genrename,
+          description: genre.description,
+        },
+      });
     } catch (err) {
       console.error('Error fetching genre:', err);
       res.status(500).send('Server error');
@@ -135,32 +197,4 @@ module.exports = {
   newGenreForm: (req, res) => {
     res.render('newGenreForm', { errors: {}, formData: {} });
   },
-
-  // index: async (req, res) => {
-  //   const genres = await genresModel.getAllGenres();
-
-  //   if (!genres) {
-  //     res.status(404).send('genres not found');
-  //     return;
-  //   }
-  //   res.render('index', { genres });
-  // },
-  // index: async (req, res) => {
-  //   const genres = await genresModel.getAllGenres();
-
-  //   if (!genres) {
-  //     res.status(404).send('genres not found');
-  //     return;
-  //   }
-  //   res.render('index', { genres });
-  // },
-  // index: async (req, res) => {
-  //   const genres = await genresModel.getAllGenres();
-
-  //   if (!genres) {
-  //     res.status(404).send('genres not found');
-  //     return;
-  //   }
-  //   res.render('index', { genres });
-  // },
 };

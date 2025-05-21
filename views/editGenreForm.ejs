@@ -3,26 +3,59 @@
   <head>
     <meta charset="UTF-8" />
     <title>Edit Genre</title>
+    <style>
+      .error {
+        color: red;
+        font-size: 0.9em;
+      }
+      input,
+      textarea {
+        display: block;
+        margin-bottom: 10px;
+        width: 300px;
+        padding: 5px;
+      }
+      label {
+        font-weight: bold;
+      }
+      .required-asterisk {
+        color: red;
+        margin-left: 3px;
+      }
+    </style>
   </head>
   <body>
-    <h1>Edit Genre: <%= genre.genrename %></h1>
+    <h1>Edit Genre: <%= locals.lastValidGenrename || formData.genrename %></h1>
 
-    <form action="/genres/<%= genre.id %>" method="POST">
+    <% if (errors?.general) { %>
+    <p class="error"><%= errors.general %></p>
+    <% } %>
+
+    <form action="/genres/<%= genreId %>" method="POST">
       <div>
-        <label for="genrename">Genre Name:</label>
+        <% if (errors?.genrename) { %>
+        <p class="error"><%= errors.genrename %></p>
+        <% } %>
+        <label for="genrename">
+          Genre Name
+          <span class="required-asterisk">*</span>
+        </label>
         <input
           type="text"
           id="genrename"
           name="genrename"
-          value="<%= genre.genrename %>"
+          value="<%= formData.genrename || '' %>"
           required
         />
       </div>
 
       <div>
-        <label for="description">Description:</label><br />
+        <% if (errors?.description) { %>
+        <p class="error"><%= errors.description %></p>
+        <% } %>
+        <label for="description"> Description </label>
         <textarea id="description" name="description" rows="4" cols="50">
-<%= genre.description || '' %></textarea
+<%= formData.description || '' %> </textarea
         >
       </div>
 
