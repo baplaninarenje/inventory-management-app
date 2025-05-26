@@ -33,34 +33,34 @@ INSERT INTO genres (genrename, description) VALUES
 -- CREATE games TABLE
 CREATE TABLE IF NOT EXISTS games (
   id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  title VARCHAR(255) NOT NULL,
-  release_date DATE,
+  title VARCHAR(255) NOT NULL UNIQUE,
+  release_year INTEGER,
   description TEXT
 );
 
 -- INSERT sample games
-INSERT INTO games (title, release_date, description) VALUES
-  ('Battle Quest', '2021-11-10', 'An action RPG set in a medieval fantasy world.'),
-  ('Farm Life Sim', '2022-05-20', 'A relaxing simulation game where you build and manage your own farm.'),
-  ('Zombie Nightmares', '2023-10-31', 'A horror survival game in a zombie-infested city.'),
-  ('Galaxy Conqueror', '2020-08-15', 'A space-themed strategy game focused on galactic domination.'),
-  ('Puzzle Master', '2024-01-01', 'A challenging puzzle game with hundreds of logic-based levels.');
+INSERT INTO games (title, release_year, description) VALUES
+  ('Battle Quest', '2021', 'An action RPG set in a medieval fantasy world.'),
+  ('Farm Life Sim', '2022', 'A relaxing simulation game where you build and manage your own farm.'),
+  ('Zombie Nightmares', '2023', 'A horror survival game in a zombie-infested city.'),
+  ('Galaxy Conqueror', '2020', 'A space-themed strategy game focused on galactic domination.'),
+  ('Puzzle Master', '2024', 'A challenging puzzle game with hundreds of logic-based levels.');
 
 -- CREATE developers TABLE
 CREATE TABLE IF NOT EXISTS developers (
   id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   name VARCHAR(255) NOT NULL,
-  founded_in DATE,
+  founded_in INTEGER,
   country VARCHAR(100)
 );
 
 -- INSERT sample developers
 INSERT INTO developers (name, founded_in, country) VALUES
-  ('Iron Pixel Studios', '2015-03-01', 'USA'),
-  ('Nebula Interactive', '2012-09-12', 'Canada'),
-  ('Red Ape Games', '2018-06-23', 'UK'),
-  ('Sunrise Devs', '2020-01-15', 'Japan'),
-  ('Midnight Coderz', '2019-11-11', 'Germany');
+  ('Iron Pixel Studios', '2015', 'USA'),
+  ('Nebula Interactive', '2012', 'Canada'),
+  ('Red Ape Games', '2018', 'UK'),
+  ('Sunrise Devs', '2020', 'Japan'),
+  ('Midnight Coderz', '2019', 'Germany');
 
 -- CREATE game_developers TABLE
 CREATE TABLE IF NOT EXISTS game_developers (

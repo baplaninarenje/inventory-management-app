@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Game Created</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+      }
+      h1 {
+        color: #2c3e50;
+      }
+      p {
+        margin-bottom: 10px;
+      }
+      strong {
+        color: #34495e;
+      }
+      em {
+        color: #7f8c8d;
+      }
+      a {
+        color: #3498db;
+        text-decoration: none;
+        margin-right: 10px;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .actions {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Game Created Successfully</h1>
+
+      <p><strong>Title:</strong> <%= game.title %></p>
+
+      <% if (game.description) { %>
+      <p><strong>Description:</strong> <%= game.description %></p>
+      <% } else { %>
+      <p><em>No description provided.</em></p>
+      <% } %> <% if (game.release_year) { %>
+      <p><strong>Release Year:</strong> <%= game.release_year %></p>
+      <% } %> <% if (game.genreNames && game.genreNames.length) { %>
+      <p><strong>Genres:</strong> <%= game.genreNames.join(', ') %></p>
+      <% } else { %>
+      <p><strong>Genres:</strong> <em>Unknown Genre</em></p>
+      <% } %>
+
+      <div class="actions">
+        <a href="/games">Back to games list</a> |
+        <a href="/games/new">Create another game</a>
+      </div>
+    </main>
+  </body>
+</html>

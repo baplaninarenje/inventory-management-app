@@ -1,19 +1,34 @@
 const gamesModel = require('../models/games');
+const genresModel = require('../models/genres');
 const { body, validationResult } = require('express-validator');
+const pool = require('../models/pool');
 
-const validateGenre = [
-  body('genrename')
+const validateGame = [
+  body('title')
     .trim()
     .notEmpty()
-    .withMessage('Genre name is required.')
-    .isLength({ max: 20 })
-    .withMessage('Genre name must be at most 20 characters long.'),
+    .withMessage('Game title is required.')
+    .isLength({ max: 50 })
+    .withMessage('Title must be at most 50 characters long.'),
 
   body('description')
-    .optional({ checkFalsy: true }) // allow empty description
+    .optional({ checkFalsy: true })
     .trim()
-    .isLength({ max: 100 })
-    .withMessage('Description must be at most 100 characters long.'),
+    .isLength({ max: 200 })
+    .withMessage('Description must be at most 200 characters long.'),
+
+  body('release_year')
+    .optional({ checkFalsy: true })
+    .isInt({ min: 1980, max: new Date().getFullYear() + 1 })
+    .withMessage('Enter a valid year between 1980 and next year.'),
+
+  body('genre_ids').custom((value) => {
+    // Ensure value exists and is a non-empty array or a single valid string
+    if (!value || (Array.isArray(value) && value.length === 0)) {
+      throw new Error('At least one genre must be selected.');
+    }
+    return true;
+  }),
 ];
 
 module.exports = {
@@ -93,52 +108,80 @@ module.exports = {
   //   },
   // ],
 
-  // create: [
-  //   validateGenre,
-  //   async (req, res) => {
-  //     const errors = validationResult(req);
+  create: [
+    validateGame,
+    async (req, res) => {
+      const errors = validationResult(req);
+      const genres = await genresModel.getAllGenres();
 
-  //     if (!errors.isEmpty()) {
-  //       // Map errors array to an object keyed by path for easier use in EJS
-  //       const errorObj = {};
-  //       errors.array().forEach((err) => {
-  //         errorObj[err.path] = err.msg;
-  //       });
-  //       return res.status(400).render('newGenreForm', {
-  //         errors: errorObj,
-  //         formData: req.body,
-  //       });
-  //     }
+      if (!errors.isEmpty()) {
+        // Map errors array to an object keyed by path for easier use in EJS
+        const errorObj = {};
+        errors.array().forEach((err) => {
+          errorObj[err.path] = err.msg;
+        });
 
-  //     const { genrename, description } = req.body;
+        return res.status(400).render('newGameForm', {
+          errors: errorObj,
+          formData: req.body,
+          genres,
+        });
+      }
 
-  //     try {
-  //       const genre = await genresModel.createGenre({ genrename, description });
-  //       res.render('genreCreated', { genre });
-  //       return;
-  //     } catch (err) {
-  //       console.error('Error creating genre:', err);
-  //       // Check for unique constraint violation (PostgreSQL error code 23505)
-  //       if (err.code === '23505') {
-  //         return res.status(400).render('newGenreForm', {
-  //           errors: {
-  //             genrename:
-  //               'Genre name already exists. Please choose a different one.',
-  //           },
-  //           formData: req.body,
-  //         });
-  //       }
+      // ----- gather data ----------------------------------------------------
+      const { title, release_year, description } = req.body;
 
-  //       // Fallback for any other server error
-  //       return res.status(500).render('newGenreForm', {
-  //         errors: {
-  //           general: 'An unexpected error occurred. Please try again later.',
-  //         },
-  //         formData: req.body,
-  //       });
-  //     }
-  //   },
-  // ],
+      const genreIds = [].concat(req.body.genre_ids || []); // ensure array
+
+      const client = await pool.connect();
+      try {
+        await client.query('BEGIN');
+
+        const game = await gamesModel.createGame(
+          title,
+          release_year,
+          description,
+          genreIds,
+          client
+        );
+
+        const genreNames = await gamesModel.getGenreNamesForGame(
+          game.id,
+          client
+        );
+
+        game.genreNames = genreNames;
+
+        await client.query('COMMIT');
+        // optional: attach genre/developer names for the success page
+        res.render('gameCreated', { game });
+      } catch (err) {
+        await client.query('ROLLBACK');
+        console.error('Error creating game:', err);
+
+        if (err.code === '23505') {
+          return res.status(400).render('newGameForm', {
+            errors: {
+              title: 'Game name already exists. Please choose a different one.',
+            },
+            formData: req.body,
+            genres,
+          });
+        }
+
+        // Fallback for any other server error
+        return res.status(500).render('newGameForm', {
+          errors: {
+            general: 'An unexpected error occurred. Please try again later.',
+          },
+          formData: req.body,
+          genres,
+        });
+      } finally {
+        client.release();
+      }
+    },
+  ],
 
   index: async (req, res) => {
     try {
@@ -193,7 +236,8 @@ module.exports = {
   //   }
   // },
 
-  // newGenreForm: (req, res) => {
-  //   res.render('newGenreForm', { errors: {}, formData: {} });
-  // },
+  newGameForm: async (req, res) => {
+    const genres = await genresModel.getAllGenres();
+    res.render('newGameForm', { errors: {}, formData: {}, genres });
+  },
 };

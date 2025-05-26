@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Add New Game</title>
+  <style>
+    .error { color: red; font-size: 0.9em; }
+    input, textarea, select {
+      display: block;
+      margin-bottom: 10px;
+      width: 300px;
+      padding: 5px;
+    }
+    label { font-weight: bold; }
+    .required-asterisk { color: red; margin-left: 3px; }
+  </style>
+</head>
+<body>
+  <h1>Add a New Game</h1>
+
+  <% if (errors?.general) { %>
+    <p class="error"><%= errors.general %></p>
+  <% } %>
+
+  <form action="/games" method="POST">
+    <!-- Title -->
+    <div>
+      <% if (errors?.title) { %><p class="error"><%= errors.title %></p><% } %>
+      <label for="title">
+        Game Title<span class="required-asterisk">*</span>
+      </label>
+      <input type="text" id="title" name="title" value="<%= formData?.title || '' %>">
+    </div>
+
+    <!-- Description -->
+    <div>
+      <% if (errors?.description) { %><p class="error"><%= errors.description %></p><% } %>
+      <label for="description">Description</label>
+      <textarea id="description" name="description" rows="4"><%= formData?.description || '' %></textarea>
+    </div>
+
+    <!-- Release year -->
+    <div>
+      <% if (errors?.release_year) { %><p class="error"><%= errors.release_year %></p><% } %>
+      <label for="release_year">Release Year</label>
+      <input type="number" id="release_year" name="release_year" value="<%= formData?.release_year || '' %>">
+    </div>
+
+    <!-- Multiple genres -->
+    <div>
+      <% if (errors?.genre_ids) { %><p class="error"><%= errors.genre_ids %></p><% } %>
+      <label for="genre_ids">
+        Genres<span class="required-asterisk">*</span>
+      </label>
+      <select id="genre_ids" name="genre_ids[]" multiple size="5">
+        <% genres.forEach(genre => { 
+             const selected =
+               Array.isArray(formData?.genre_ids) &&
+               formData.genre_ids.includes(String(genre.id));
+        %>
+          <option value="<%= genre.id %>" <%= selected ? 'selected' : '' %>>
+            <%= genre.genrename %>
+          </option>
+        <% }) %>
+      </select>
+      <small>Hold Ctrl (Windows) or Cmd (macOS) to select multiple genres.</small>
+    </div>
+
+    <button type="submit">Create Game</button>
+  </form>
+
+  <p><a href="/games">← Back to games list</a></p>
+</body>
+</html>
