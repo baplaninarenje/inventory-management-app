@@ -16,14 +16,14 @@ async function deleteGameById(gameId) {
   await pool.query('DELETE FROM games WHERE id = $1', [gameId]);
 }
 
-async function getGenreNamesForGame(gameId, client) {
+async function getGenreNamesForGame(gameId) {
   const sql = `
     SELECT g.genrename
     FROM genres g
     JOIN game_genres gg ON g.id = gg.genre_id
     WHERE gg.game_id = $1;
   `;
-  const result = await client.query(sql, [gameId]);
+  const result = await pool.query(sql, [gameId]);
   return result.rows.map((row) => row.genrename);
 }
 

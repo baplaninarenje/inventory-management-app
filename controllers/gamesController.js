@@ -32,26 +32,24 @@ const validateGame = [
 ];
 
 module.exports = {
-  // show: async (req, res) => {
-  //   const { genreId } = req.params;
+  show: async (req, res) => {
+    const { gameId } = req.params;
 
-  //   try {
-  //     const genre = await genresModel.getGenreById(genreId);
-  //     if (!genre) {
-  //       return res.status(404).send('Genre not found');
-  //     }
+    try {
+      const game = await gamesModel.getGameById(gameId);
+      if (!game) {
+        return res.status(404).send('Game not found');
+      }
 
-  //     const games = await gamesModel.getGamesByGenreId(genreId);
+      const genreNames = await gamesModel.getGenreNamesForGame(game.id);
 
-  //     res.render('genreDetail', {
-  //       genre,
-  //       games,
-  //     });
-  //   } catch (err) {
-  //     console.error('Error fetching genre:', err);
-  //     res.status(500).send('Server error');
-  //   }
-  // },
+      game.genreNames = genreNames;
+      res.render('gameDetails', { game, pageTitle: 'Game Details' });
+    } catch (err) {
+      console.error('Error fetching game:', err);
+      res.status(500).send('Server error');
+    }
+  },
 
   // update: [
   //   validateGenre,
@@ -145,16 +143,15 @@ module.exports = {
           client
         );
 
-        const genreNames = await gamesModel.getGenreNamesForGame(
-          game.id,
-          client
-        );
+        await client.query('COMMIT');
 
+        const genreNames = await gamesModel.getGenreNamesForGame(game.id);
         game.genreNames = genreNames;
 
-        await client.query('COMMIT');
-        // optional: attach genre/developer names for the success page
-        res.render('gameCreated', { game });
+        res.render('gameDetails', {
+          game,
+          pageTitle: 'Game Created Successfully',
+        });
       } catch (err) {
         await client.query('ROLLBACK');
         console.error('Error creating game:', err);
