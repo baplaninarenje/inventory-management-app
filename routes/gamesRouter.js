@@ -3,7 +3,7 @@ const gamesRouter = Router();
 const gamesController = require('../controllers/gamesController');
 
 // gamesRouter.get('/:gameId/edit', gamesController.editGameForm);
-// gamesRouter.post('/:gameId/delete', gamesController.deleteGame);
+gamesRouter.post('/:gameId/delete', gamesController.deleteGame);
 gamesRouter.get('/new', gamesController.newGameForm);
 gamesRouter.get('/:gameId', gamesController.show);
 // gamesRouter.post('/:gameId', gamesController.update);

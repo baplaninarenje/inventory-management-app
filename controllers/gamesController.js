@@ -220,18 +220,18 @@ module.exports = {
   //   }
   // },
 
-  // deleteGenre: async (req, res) => {
-  //   const { genreId } = req.params;
+  deleteGame: async (req, res) => {
+    const { gameId } = req.params;
 
-  //   try {
-  //     const genre = await genresModel.deleteGenreById(genreId);
-  //     res.redirect('/');
-  //     return;
-  //   } catch (err) {
-  //     console.error('Error deleting genre:', err);
-  //     res.status(500).send('Server error');
-  //   }
-  // },
+    try {
+      await gamesModel.deleteGameById(gameId);
+      res.redirect('/games');
+      return;
+    } catch (err) {
+      console.error('Error deleting game:', err);
+      res.status(500).send('Server error');
+    }
+  },
 
   newGameForm: async (req, res) => {
     const genres = await genresModel.getAllGenres();
